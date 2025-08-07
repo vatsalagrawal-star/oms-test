@@ -1,0 +1,20 @@
+# .golangci.yml
+run:
+  timeout: 3m
+
+linters:
+  enable:
+    - staticcheck
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - gosec
+    - misspell
+
+issues:
+  exclude-use-default: false
+
+linters-settings:
+  misspell:
+    locale: US
