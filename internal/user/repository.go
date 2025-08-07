@@ -5,12 +5,13 @@ import (
 	"oms-test/models"
 )
 
-type UserRepository struct {}
+type UserRepository struct{}
 
 func (repo *UserRepository) SearchUsers(usernameOrEmail *string) ([]models.User, error) {
 	var user []models.User
-	result := database.DB.Where("username ilike ? or email ilike ?", usernameOrEmail, usernameOrEmail).Find(&user)
-	if result.Error!=nil{
+	likeQuery := "%" + *usernameOrEmail + "%"
+	result := database.DB.Where("username ilike ? or email ilike ?", likeQuery, likeQuery).Find(&user)
+	if result.Error != nil {
 		return []models.User{}, result.Error
 	}
 	return user, nil
@@ -19,12 +20,19 @@ func (repo *UserRepository) SearchUsers(usernameOrEmail *string) ([]models.User,
 func (repo *UserRepository) CheckUsernameEmailUniqueness(username, email *string) bool {
 	var user models.User
 	result := database.DB.Where("username = ? or email = ?", username, email).Find(&user)
-	return result.Error != nil
+	if result.Error != nil {
+		return false
+	}
+	return result.RowsAffected != 0
 }
 
-func (repo *UserRepository) CheckUserUniquenessExcludingUserId(username, email *string, id *uint) bool {
+func (repo *UserRepository) CheckUserUniquenessExcludingUserId(
+	username, email *string,
+	id *uint,
+) bool {
 	var user models.User
-	result := database.DB.Where("(username = ? or email = ?) and id != ?", username, email, id).Find(&user)
+	result := database.DB.Where("(username = ? or email = ?) and id != ?", username, email, id).
+		Find(&user)
 	return result.Error != nil
 }
 

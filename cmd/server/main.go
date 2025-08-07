@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+
 	"oms-test/api"
 	"oms-test/database"
 )
@@ -14,5 +16,8 @@ func main() {
 
 	// Setup and run the Gin router
 	router := api.SetupRouter()
-	router.Run(":8080")
+	err := router.Run(":8080")
+	if err != nil {
+		log.Fatalf("couldn't run server")
+	}
 }

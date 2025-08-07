@@ -3,8 +3,10 @@ package database
 import (
 	"fmt"
 	"log"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
 	"oms-test/models"
 )
 
@@ -18,10 +20,12 @@ func Connect() {
 		log.Fatal("Failed to connect to database: ", err)
 	}
 
-	fmt.Println("Connected to database successfully!")	
+	fmt.Println("Connected to database successfully!")
 }
 
 func Migrate() {
-	DB.AutoMigrate(&models.User{})
+	if err := DB.AutoMigrate(&models.User{}); err != nil {
+		log.Fatalf("unabale to migrate")
+	}
 	fmt.Println("Database migration completed.")
 }

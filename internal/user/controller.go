@@ -2,6 +2,7 @@ package user
 
 import (
 	"net/http"
+
 	"oms-test/models"
 
 	"github.com/gin-gonic/gin"
@@ -15,6 +16,10 @@ func (con *UserContorller) SearchUser(c *gin.Context) {
 	usernameOrEmail := c.Query("query")
 	user, err := con.service.searchUsers(&usernameOrEmail)
 	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "UError while running query"})
+		return
+	}
+	if len(user) == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Username and Email does not exist!"})
 		return
 	}
@@ -28,34 +33,35 @@ func (con *UserContorller) CreateUser(c *gin.Context) {
 		return
 	}
 
-	received_user, err := con.service.createUser(&user)
-
+	receivedUser, err := con.service.createUser(&user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
-	c.JSON(http.StatusCreated, received_user)
+	c.JSON(http.StatusCreated, receivedUser)
 }
 
 func (con *UserContorller) FetchUser(c *gin.Context) {
 	id := c.Param("id")
 
 	user, err := con.service.getUser(id)
-	
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusAccepted, user)
+	c.JSON(http.StatusFound, user)
 }
 
 func (con *UserContorller) UpdateUser(c *gin.Context) {
 	id := c.Param("id")
 
 	user, err := con.service.getUser(id)
-
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "unable to find the user id that you want to update"})
+		c.JSON(
+			http.StatusBadRequest,
+			gin.H{"error": "unable to find the user id that you want to update"},
+		)
 		return
 	}
 
@@ -66,17 +72,15 @@ func (con *UserContorller) UpdateUser(c *gin.Context) {
 	}
 
 	err = con.service.updateUser(user, &newUser)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusAccepted, newUser)
+	c.Status(http.StatusAccepted)
 }
 
 func (con *UserContorller) DeleteUser(c *gin.Context) {
 	id := c.Param("id")
 	con.service.deleteUser(id)
-	c.JSON(http.StatusAccepted, &models.User{})
+	c.Status(http.StatusAccepted)
 }
-

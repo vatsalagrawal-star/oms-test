@@ -2,6 +2,7 @@ package user
 
 import (
 	"errors"
+
 	"oms-test/models"
 )
 
@@ -29,7 +30,6 @@ func (ser *UserService) createUser(user *models.User) (*models.User, error) {
 
 func (ser *UserService) getUser(id string) (*models.User, error) {
 	user, err := ser.repo.GetUser(id)
-
 	if err != nil {
 		return &models.User{}, err
 	}
@@ -39,7 +39,7 @@ func (ser *UserService) getUser(id string) (*models.User, error) {
 
 func (ser *UserService) updateUser(old, new *models.User) error {
 	is_duplicate := ser.repo.CheckUserUniquenessExcludingUserId(&new.Username, &new.Email, &old.ID)
-	
+
 	if is_duplicate {
 		return errors.New("user with the same username or email already exists")
 	}
