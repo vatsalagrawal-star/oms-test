@@ -159,3 +159,18 @@ func (ctrl *ProductController) OutflowProduct(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Product outflow successful"})
 }
+
+func (ctrl *ProductController) GetAllProducts(c *gin.Context) {
+	products, err := ctrl.ser.getAllProducts()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve products"})
+		return
+	}
+
+	if len(*products) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"message": "No products found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, products)
+}

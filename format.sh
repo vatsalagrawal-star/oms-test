@@ -7,5 +7,3 @@ golines -w .
 
 # Run linter (read-only)
 golangci-lint run
-
-echo "Successfully formatted all project!"

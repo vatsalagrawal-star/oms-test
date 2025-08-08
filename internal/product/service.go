@@ -64,3 +64,11 @@ func (ser *ProductService) outflowProduct(product *models.Product, quantity uint
 
 	return ser.repo.OutflowProduct(product, quantity)
 }
+
+func (ser *ProductService) getAllProducts() (*[]models.Product, error) {
+	products, err := ser.repo.GetAllProducts()
+	if err != nil {
+		return &[]models.Product{}, err
+	}
+	return products, nil
+}

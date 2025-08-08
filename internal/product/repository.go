@@ -70,3 +70,13 @@ func (repo ProductRepo) OutflowProduct(product *models.Product, quantity uint) e
 	}
 	return nil
 }
+
+func (repo ProductRepo) GetAllProducts() (*[]models.Product, error) {
+	var products []models.Product
+	result := database.DB.Model(&models.Product{}).Where("quantity_available > 0").Find(&products)
+
+	if result.Error != nil {
+		return &[]models.Product{}, result.Error
+	}
+	return &products, nil
+}
