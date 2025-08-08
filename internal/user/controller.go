@@ -71,6 +71,7 @@ func (con *UserContorller) UpdateUser(c *gin.Context) {
 		return
 	}
 
+	newUser.ID = user.ID
 	err = con.service.updateUser(user, &newUser)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

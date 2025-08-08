@@ -10,7 +10,8 @@ type UserRepository struct{}
 func (repo *UserRepository) SearchUsers(usernameOrEmail *string) ([]models.User, error) {
 	var user []models.User
 	likeQuery := "%" + *usernameOrEmail + "%"
-	result := database.DB.Where("username ilike ? or email ilike ?", likeQuery, likeQuery).Find(&user)
+	result := database.DB.Where("username ilike ? or email ilike ?", likeQuery, likeQuery).
+		Find(&user)
 	if result.Error != nil {
 		return []models.User{}, result.Error
 	}
